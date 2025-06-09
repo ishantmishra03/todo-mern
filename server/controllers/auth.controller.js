@@ -60,7 +60,7 @@ export const signup = async (req, res) => {
         return res.json({ success: true, message: "Registered Successfully", userData: { name: user.name, avatar: user.profileAvatar } });
 
     } catch (error) {
-        return res.json({ success: false, message: error.message});
+        return res.json({ success: false, message: error.message });
     }
 }
 
@@ -107,11 +107,25 @@ export const signin = async (req, res) => {
 
 //Logout Functionality
 export const signout = async (req, res) => {
-    //Clear Cookie
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-    });
-    res.status(200).json({ message: 'Logged out' });
+    try {
+        //Clear Cookie
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        });
+        res.json({ success: true, message: 'Logged out' });
+    } catch (error) {
+        res.json({ success: false, message: error.message })
+    }
+}
+
+//API to check whether user is logged IN or NOT
+export const isAuthenticated = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.userId);
+        return res.json({ success: true, userData: { name: user.name, avatar: user.profileAvatar }  });
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
 }

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -18,13 +18,32 @@ export const AppProvider = ({ children }) => {
   //User Data from backend
   const [userData, setUserData] = useState(null);
 
+  //Fetch User is Login or Not on Load
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get("/api/auth");
+      if (data.success) {
+        setIsLoggedIn(true);
+        setUserData(data.userData);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  //Checks if user is already LoggedIn 
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const value = {
     navigate,
     axios,
-    isLoggedIn, setIsLoggedIn,
-    showAuth, setShowAuth,
-    userData, setUserData,
+    isLoggedIn,
+    setIsLoggedIn,
+    showAuth,
+    setShowAuth,
+    userData,
+    setUserData,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

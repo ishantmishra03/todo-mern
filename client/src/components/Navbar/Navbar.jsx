@@ -1,8 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
-  const { isLoggedIn, setShowAuth, userData } = useAppContext();
+  const {
+    isLoggedIn,
+    setShowAuth,
+    userData,
+    axios,
+    setIsLoggedIn,
+    setUserData,
+    navigate,
+  } = useAppContext();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -17,16 +26,37 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  //Logout Handler
+  const handleLogout = async () => {
+    try {
+      //Logout API call
+      const { data } = await axios.post("/api/auth/logout");
+      if (data.success) {
+        //Reset all field to initial
+        setDropdownOpen(false);
+        toast.success(data.message);
+        setIsLoggedIn(false);
+        setUserData(null);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
-    <header className="px-4 py-2 bg-slate-50 shadow-md">
-      <nav className="max-w-6xl mx-auto flex items-center justify-between rounded-full px-6 py-2 relative">
+    <header className="px-4 py-1 bg-slate-50/10 shadow-md border-b border-slate-900/10">
+      <nav className="max-w-6xl mx-auto flex items-center justify-between rounded-full px-6 py-1 relative">
         {/* Logo */}
         <div className="text-2xl lg:text-3xl font-bold text-[#1e293b] w-12 h-12 flex items-center gap-2">
           <span className="md:block hidden">Todo</span>
           <img
+            onClick={() => navigate("/")}
             src="/favicon.png"
             alt="TodoMERN"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
           />
         </div>
 
@@ -43,15 +73,18 @@ const Navbar = () => {
               <img
                 src={userData.avatar}
                 alt="User Avatar"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover cursor-pointer"
               />
             </button>
           )}
 
           {/* Dropdown */}
           {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg text-sm text-gray-700 z-20">
-              <button className="w-full text-left px-4 py-2 hover:bg-orange-100 transition">
+            <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg text-md text-gray-700 z-20">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 hover:bg-orange-100 transition cursor-pointer"
+              >
                 Logout
               </button>
             </div>
@@ -67,7 +100,7 @@ const Navbar = () => {
               Sign In
             </button>
           ) : (
-            <button className="bg-orange-500 hover:bg-orange-600 cursor-pointer text-white px-5 py-2 rounded-full transition duration-200 whitespace-nowrap">
+            <button onClick={() => navigate('/todos')} className="bg-orange-500 hover:bg-orange-600 cursor-pointer text-white px-5 py-2 rounded-full transition duration-200 whitespace-nowrap">
               My Todos
             </button>
           )}
