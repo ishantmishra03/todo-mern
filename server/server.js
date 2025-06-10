@@ -6,7 +6,8 @@ import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/db.config.js';
 
-import authRouter from './routes/auth.routes.js'
+import authRouter from './routes/auth.routes.js';
+import todoRouter from './routes/todo.routes.js';
 
 //CORS setup
 const allowedOrigins = [
@@ -39,6 +40,7 @@ app.use(express.json());
 
 //Routes
 app.use('/api/auth', authRouter);
+app.use('/api/todo', todoRouter);
 
 
 
