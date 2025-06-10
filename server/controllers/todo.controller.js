@@ -26,6 +26,15 @@ export const addTodo = async (req, res) => {
 
         return res.json({success: true, message : "Created successfully"})
     } catch (error) {
-        return res.json({ success: false, message: error.message })
+        return res.json({ success: false, message: error.message });
+    }
+}
+
+//Send todo for a specific user
+export const getTodo = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
     }
 }
