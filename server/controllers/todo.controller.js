@@ -33,7 +33,7 @@ export const addTodo = async (req, res) => {
 //Send todo for a specific user
 export const getTodo = async (req,res) => {
     try {
-        
+        const userId = req.userId;
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }
