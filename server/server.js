@@ -12,6 +12,7 @@ import todoRouter from './routes/todo.routes.js';
 //CORS setup
 const allowedOrigins = [
     'http://localhost:5173',
+    'https://todomern-sigma.vercel.app/'
 ];
 
 const corsOptions = {
