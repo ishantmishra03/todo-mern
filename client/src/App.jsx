@@ -1,8 +1,10 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Todos from "./pages/Todos/Todos";
+import Layout from "./pages/Todos/Layout";
 import AddTodo from "./pages/Todos/AddTodo";
+import Todos from "./pages/Todos/Todos";
+import Todo from "./pages/Todos/Todo";
 import Auth from "./components/Auth/Auth";
 import Navbar from "./components/Navbar/Navbar";
 import { useAppContext } from "./context/AppContext";
@@ -21,11 +23,13 @@ const App = () => {
           path="/todos"
           element={
             <ProtectedRoute>
-              <Todos />
+              <Layout />
             </ProtectedRoute>
           }
         >
+          <Route index element={<Todos />}/>
           <Route path="add-todo" element={<AddTodo />} />
+          <Route path=":id" element={<Todo />} />
         </Route>
       </Routes>
     </div>

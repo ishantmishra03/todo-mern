@@ -11,7 +11,7 @@ import { toast } from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
 
 export default function TodoForm() {
-  const { axios } = useAppContext();
+  const { axios, navigate } = useAppContext();
   //All Fields of todo in formData
   const [formData, setFormData] = useState({
     title: "",
@@ -50,6 +50,7 @@ export default function TodoForm() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+      navigate('/todos');
     }
   };
 
