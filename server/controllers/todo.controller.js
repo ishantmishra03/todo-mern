@@ -50,20 +50,20 @@ export const getTodo = async (req, res) => {
 }
 
 //Get todo matching with specific id
-export const getOneTodo = async (req,res) => {
+export const getOneTodo = async (req, res) => {
     try {
         //Get todoId fron frontedn
         const { id } = req.body;
 
         //Get todo from DB
         const todo = await todoModel.findById(id);
-        if(!todo){
-            return res.json({success: false, message : "No Todo Found"})
+        if (!todo) {
+            return res.json({ success: false, message: "No Todo Found" })
         }
 
-        return res.json({success: true, todo});
+        return res.json({ success: true, todo });
     } catch (error) {
-        return res.json({success: false, message : error.message});
+        return res.json({ success: false, message: error.message });
     }
 }
 
@@ -106,7 +106,7 @@ export const deleteTodo = async (req, res) => {
 }
 
 //Change priority
-export const changePriority = async (req,res) => {
+export const changePriority = async (req, res) => {
     try {
         //Get TodoID from frontend
         const { todoId, newPriority } = req.body;
@@ -122,6 +122,28 @@ export const changePriority = async (req,res) => {
 
         return res.json({ success: true, message: "Updated" });
 
+    } catch (error) {
+        return res.json({ success: false, message: error.message });
+    }
+}
+
+//Edit Todo
+export const editTodo = async (req, res) => {
+    try {
+        //Receive data from frontend
+        const { title, description, isCompleted, priority, dueDate, todoId } = req.body;
+
+        //Check if all fileds are present
+        if (!title || !description || !priority || !dueDate) {
+            return res.json({ success: false, message: "All fields are required" });
+        }
+
+        //Add Todo Data in backend
+        const todo = await todoModel.findByIdAndUpdate(todoId, {
+            title, description, isCompleted, priority, dueDate, user: req.userId,
+        }, { new: true });
+
+        return res.json({ success: true, message: "Updated successfully" })
     } catch (error) {
         return res.json({ success: false, message: error.message });
     }

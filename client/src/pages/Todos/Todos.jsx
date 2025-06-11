@@ -48,9 +48,7 @@ export default function Todos() {
 
   // Apply search and filter
   const filteredTodos = todos
-    .filter((todo) =>
-      todo.title.toLowerCase().includes(search.toLowerCase())
-    )
+    .filter((todo) => todo.title.toLowerCase().includes(search.toLowerCase()))
     .filter((todo) => {
       if (filter === "active") return !todo.isCompleted;
       if (filter === "completed") return todo.isCompleted;
@@ -90,57 +88,79 @@ export default function Todos() {
         </div>
       </div>
 
-      {/* Task Cards */}
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {filteredTodos.map((todo) => (
-          <div
-            key={todo._id}
-            className="relative bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer"
-          >
-            <div className="absolute top-0 left-0 h-1 w-full bg-orange-400 rounded-t-md" />
+      {/* Priority Sections */}
+      {["high", "medium", "low"].map((level) => {
+        const priorityTodos = filteredTodos.filter(
+          (todo) => todo.priority.toLowerCase() === level
+        );
 
-            {/* Title & Checkbox */}
-            <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={todo.isCompleted}
-                onChange={(e) => {
-                  e.stopPropagation();
-                  toggleTodo(todo._id);
-                }}
-                className="mt-1 h-5 w-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
-              />
-              <span
-                onClick={() => navigate(`/todos/${todo._id}`)}
-                className={`text-lg font-medium ${
-                  todo.isCompleted
-                    ? "line-through text-gray-400"
-                    : "text-gray-800"
-                }`}
-              >
-                {todo.title}
-              </span>
-            </div>
+        return (
+          <div key={level} className="mb-10">
+            <h2 className="text-xl font-semibold mb-4 capitalize text-slate-800">
+              {level} Priority
+            </h2>
 
-            {/* Due Date */}
-            <div className="mt-6 text-sm text-gray-500">
-              <span className="font-medium text-gray-600">Due:</span>{" "}
-              {new Date(todo.dueDate).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {priorityTodos.map((todo) => (
+                <div
+                  key={todo._id}
+                  className="relative bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition p-5 flex flex-col justify-between cursor-pointer"
+                >
+                  <div className="absolute top-0 left-0 h-1 w-full bg-orange-400 rounded-t-md" />
+
+                  {/* Title & Checkbox */}
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={todo.isCompleted}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        toggleTodo(todo._id);
+                      }}
+                      className="mt-1 h-5 w-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+                    />
+                    <span
+                      onClick={() => navigate(`/todos/${todo._id}`)}
+                      className={`text-lg font-medium ${
+                        todo.isCompleted
+                          ? "line-through text-gray-400"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      {todo.title}
+                    </span>
+                  </div>
+
+                  {/* Due Date & Overdue */}
+                  <div className="mt-6 text-sm text-gray-500 space-y-1">
+                    <div>
+                      <span className="font-medium text-gray-600">Due:</span>{" "}
+                      {new Date(todo.dueDate).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </div>
+
+                    {!todo.isCompleted &&
+                      new Date(todo.dueDate) < new Date() && (
+                        <div className="text-xs text-red-600 bg-red-50 border border-red-300 px-2 py-1 rounded">
+                          ⚠️ Overdue
+                        </div>
+                      )}
+                  </div>
+                </div>
+              ))}
+
+              {priorityTodos.length === 0 && (
+                <p className="text-gray-500 col-span-full text-center">
+                  No {level} priority tasks found.
+                </p>
+              )}
             </div>
           </div>
-        ))}
-
-        {/* No tasks */}
-        {filteredTodos.length === 0 && (
-          <p className="text-gray-500 col-span-full text-center">
-            No tasks found.
-          </p>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 }

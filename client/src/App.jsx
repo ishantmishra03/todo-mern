@@ -5,6 +5,7 @@ import Layout from "./pages/Todos/Layout";
 import AddTodo from "./pages/Todos/AddTodo";
 import Todos from "./pages/Todos/Todos";
 import Todo from "./pages/Todos/Todo";
+import EditTodo from "./pages/Todos/EditTodo";
 import Auth from "./components/Auth/Auth";
 import Navbar from "./components/Navbar/Navbar";
 import { useAppContext } from "./context/AppContext";
@@ -30,6 +31,7 @@ const App = () => {
           <Route index element={<Todos />}/>
           <Route path="add-todo" element={<AddTodo />} />
           <Route path=":id" element={<Todo />} />
+          <Route path="edit/:id" element={<EditTodo />} />
         </Route>
       </Routes>
     </div>

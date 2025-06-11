@@ -36,9 +36,10 @@ export default function Todo() {
   // Update todo field (isCompleted or priority)
   const updateTodoField = async (field, value) => {
     try {
-      setTodo((prev) => ({ ...prev, [field]: value })); 
+      setTodo((prev) => ({ ...prev, [field]: value }));
       const { data } = await axios.post("/api/todo/change-priority", {
-        newPriority : value, todoId: todo._id
+        newPriority: value,
+        todoId: todo._id,
       });
       if (!data.success) {
         toast.error(data.message);
@@ -173,11 +174,22 @@ export default function Todo() {
         </div>
       </section>
 
+      {/* Warning if overdue and not completed */}
+      {!todo.isCompleted && new Date(todo.dueDate) < new Date() && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-sm">
+          ⚠️ This todo is overdue! Please complete it as soon as possible.
+        </div>
+      )}
+
       {/* Action Buttons */}
       <section className="flex gap-6">
         <button
-          onClick={() => {}}
-          className={`flex items-center gap-2 font-semibold px-6 py-3 rounded-lg shadow-md transition   ${todo.isCompleted ? "bg-gray-500 text-white hover:bg-gray-600 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"}`}
+          onClick={() => navigate(`/todos/edit/${todo._id}`)}
+          className={`flex items-center gap-2 font-semibold px-6 py-3 rounded-lg shadow-md transition   ${
+            todo.isCompleted
+              ? "bg-gray-500 text-white hover:bg-gray-600 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
+          }`}
           aria-label="Edit Todo"
           disabled={todo.isCompleted}
         >
